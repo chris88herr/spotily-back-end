@@ -1,4 +1,6 @@
-package com.chrisProjects.lyricsScraper;
+package com.chrisProjects.lyricsScraper.Utils;
+
+import com.chrisProjects.lyricsScraper.WebScraper;
 
 import java.io.File;
 import java.io.FileWriter;

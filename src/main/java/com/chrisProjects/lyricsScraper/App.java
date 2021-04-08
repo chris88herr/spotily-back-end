@@ -1,20 +1,15 @@
 package com.chrisProjects.lyricsScraper;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import com.chrisProjects.lyricsScraper.Utils.HibernateUtil;
+import com.chrisProjects.lyricsScraper.Utils.Utls;
+import com.chrisProjects.lyricsScraper.dao.GenreDaoIml;
+import com.chrisProjects.lyricsScraper.models.Genre;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.List;
 import java.util.concurrent.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Hello world!
@@ -28,14 +23,36 @@ public class App
 
     public static void main( String[] args )
     {
-        ExecutorService executor= Executors.newFixedThreadPool(4);
-        String[] artists = {"red hot chili peppers", "the marias", "brahny", "yellow days"};
-        for(String artist:artists) {
-            WebScraper webScraper = new WebScraper(artist, 5, 10);
-            executor.submit(()->webScraper.runScrapper());
+        GenreDaoIml genreDao = new GenreDaoIml();
+        List<Genre> genres = genreDao.getAllGenres();
+        if(genres!=null) {
+            System.out.println(genres.size());
+            for (Genre g : genres) {
+                System.out.println(g);
+            }
         }
-        Utls.shutDownExecutor(executor);
+        System.out.println("--------------------Get one Gnre----------------------");
+        Genre genre = genreDao.getGenreByName("Reggaeton");
+        if (genre!= null) {
+            System.out.println(genre);
+        }
+        System.out.println("--------------------Get genre by ID----------------------");
+        Genre genrebyId = genreDao.getGenreById(8);
+        if (genre!= null) {
+            System.out.println(genrebyId);
+        }
 
+        System.out.println("--------------------Update genre----------------------");
+        genreDao.updateGenre(new Genre(8,"Reggaeton"));
+        genreDao.updateGenre(new Genre(8,"Reggaeton update"));
+//        System.out.println("--------------------Delete genre----------------------");
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+        genreDao.updateGenre(new Genre(8,"Reggaeton second"));
 
     }
 

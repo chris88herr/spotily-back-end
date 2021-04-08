@@ -1,5 +1,6 @@
 package com.chrisProjects.lyricsScraper;
 
+import com.chrisProjects.lyricsScraper.Utils.Utls;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
