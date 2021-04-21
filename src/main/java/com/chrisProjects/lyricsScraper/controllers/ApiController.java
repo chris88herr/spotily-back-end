@@ -24,19 +24,19 @@ public class ApiController {
                                    @RequestParam(name="artist", required=true) String artistName
                                    ){
         //Enable CORS
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Access-Control-Allow-Origin", "*");
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.set("Access-Control-Allow-Origin", "*");
 
         String lyrics = lyricsService.getSongLyrics(artistName, songName);
         if(lyrics==null){
             System.out.println("No content");
-            return new ResponseEntity(headers, HttpStatus.NO_CONTENT);
+            return new ResponseEntity( HttpStatus.NO_CONTENT);
         }
         SongLyricsResponse body = new SongLyricsResponse(artistName, songName, lyrics);
 
 
 
-        return new ResponseEntity(body, headers, HttpStatus.OK);
+        return new ResponseEntity(body,  HttpStatus.OK);
 
     }
 }
