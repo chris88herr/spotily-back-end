@@ -1,54 +1,56 @@
 package com.chrisProjects.lyricsScraper.dao;
 
 import com.chrisProjects.lyricsScraper.Utils.HibernateUtil;
+import com.chrisProjects.lyricsScraper.models.Artist;
 import com.chrisProjects.lyricsScraper.models.Genre;
-import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import javax.persistence.LockModeType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GenreDaoIml implements GenreDao{
-
+public class ArtistDaoImpl implements ArtistDao {
     @Override
-    public void  createGenre(Genre genre) {
-        if(genre==null){
+    public void createArtist(Artist artist) {
+        if(artist==null){
             return ;
         }
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
-            session.save(genre);
+
+            session.save(artist);
         }
         catch (Exception e){
-            System.out.println(e.getCause());
+            e.printStackTrace();
+        }
+        finally {
+            return;
         }
 
-           }
+    }
 
     @Override
-    public List<Genre> getAllGenres() {
-        List<Genre> genres = new ArrayList<>();
+    public List<Artist> getAllArtists() {
+        List<Artist> artists = new ArrayList<>();
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            String hql = "From Genre";
+            String hql = "From Artist";
             Query query = session.createQuery(hql);
-            genres.addAll(query.list());
+            artists.addAll(query.list());
         } catch(Exception e ){
             System.out.println(e.getCause());
         }
 
-        return genres;
+        return artists;
     }
 
     @Override
-    public Genre getGenreByName(String name) {
-        Genre result=null;
+    public Artist getArtistByName(String name) {
+        Artist result=null;
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
-            String hql = "FROM Genre g WHERE  g.genreName = :name ";
+            String hql = "FROM artists a WHERE  a.artistName = :name ";
             Query query = session.createQuery(hql);
             query.setParameter("name" ,name);
-            result = (Genre)query.getSingleResult();
+            result = (Artist)query.getSingleResult();
 
         }catch(Exception e){
             System.out.println(e.getCause());
@@ -56,17 +58,16 @@ public class GenreDaoIml implements GenreDao{
         finally {
             return result;
         }
-
     }
 
     @Override
-    public Genre getGenreById(int id) {
-        Genre result=null;
+    public Artist getArtistById(int id) {
+        Artist result=null;
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
-            String hql = "FROM Genre g WHERE  g.genreId = :id ";
+            String hql = "FROM artists a WHERE  a.artistId = :id ";
             Query query = session.createQuery(hql);
             query.setParameter("id" ,id);
-            result = (Genre)query.getSingleResult();
+            result = (Artist)query.getSingleResult();
 
         }catch(Exception e){
             System.out.println(e.getCause());
@@ -77,13 +78,13 @@ public class GenreDaoIml implements GenreDao{
     }
 
     @Override
-    public void updateGenre(Genre genre) {
-        if(genre==null || genre.getGenreId()==0){
+    public void updateArtist(Artist artist) {
+        if(artist==null || artist.getArtistId()==0){
             return;
         }
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
             Transaction transaction = session.beginTransaction();
-            session.update(genre);
+            session.update(artist);
             transaction.commit();
         }catch (Exception e){
             System.out.println("--"+e.getCause());
@@ -92,18 +93,17 @@ public class GenreDaoIml implements GenreDao{
     }
 
     @Override
-    public void deleteGenre(Genre genre) {
-
+    public void deleteArtist(Artist artist) {
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
-            Transaction transaction = session.beginTransaction();
-            session.delete(genre);
-            transaction.commit();
-
+            Transaction tx = session.beginTransaction();
+            String hql = "Delete artists where artistName = :name";
+            Query query = session.createQuery(hql);
+            query.setParameter("name", artist.getArtistName());
+            query.executeUpdate();
+            tx.commit();
         }catch (Exception e){
             e.printStackTrace();
         }
-
-
 
     }
 }

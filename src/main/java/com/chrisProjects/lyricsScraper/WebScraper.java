@@ -1,6 +1,8 @@
 package com.chrisProjects.lyricsScraper;
 
 import com.chrisProjects.lyricsScraper.Utils.Utls;
+import com.chrisProjects.lyricsScraper.models.Song;
+import com.chrisProjects.lyricsScraper.services.SongLyricsService;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -19,11 +21,14 @@ public class WebScraper {
     public static int lyricsSize = 0;
     public static final int DEFAULT_THREAD_NUMBER = 1;
     public static final String SONG_LYRIC_DELIMITER = "@@@@@@\n";
-    private static final String BASE_LYRICS_DIR ="songLyrics";
+    public final static  String BASE_LYRICS_DIR ="songLyrics";
     private ExecutorService executor;
     private ExecutorService songLyricExecutor;
     private String artist = null;
     private String filesDirectory = null;
+    private SongLyricsService lyricsService;
+    private String singleSong;
+    private String singleSongLyrics;
 
 
     private void debbuger(String method , String debug){
@@ -34,24 +39,71 @@ public class WebScraper {
         this.artist = artist.replace(" ", "-");
         executor = Executors.newFixedThreadPool(DEFAULT_THREAD_NUMBER);
         songLyricExecutor = Executors.newFixedThreadPool(DEFAULT_THREAD_NUMBER);
+        lyricsService = new SongLyricsService();
     }
 
     public WebScraper(String artist, int numThreads, int numLyricThreads){
         this.artist = artist.replace(" ", "-");;
         executor = Executors.newFixedThreadPool(numThreads);
         songLyricExecutor = Executors.newFixedThreadPool(numLyricThreads);
+        lyricsService = new SongLyricsService();
+
+    }
+
+    public WebScraper(String artist, String song){
+        this.artist = artist.trim().replace(" ", "-");
+        this.singleSong = song.trim().replace(" ", "-");
+        executor = Executors.newFixedThreadPool(1);
+        songLyricExecutor = Executors.newFixedThreadPool(1);
+        lyricsService = new SongLyricsService();
     }
 
     public void runScrapper(){
         debbuger("","Starting scraping for " +artist);
-        writeLyricsToFiles(getLyrics());
+        List<Future<String>> lyricsFutures;
+        if(this.singleSong != null){
+            lyricsFutures = getSingleLyrics(); //returns a list of futures to try to max code reuse
+        }else {
+            lyricsFutures = getLyrics();
+        }
+//        writeLyricsToFiles(lyricsFutures);
+        writeToDatabase(lyricsFutures);
         debbuger("", "DONE with: "+artist+"\n");
+    }
+
+    private List<Future<String>> getSingleLyrics() {
+        String songUrl = geniusBaseUrl + "/" + this.artist + "-" + this.singleSong + "-lyrics";
+        Callable<String> callable = getSongLricsCallable(songUrl, this.singleSong);
+        List<Future<String>> singleFuture = new ArrayList<>();
+        singleFuture.add(songLyricExecutor.submit(callable));
+        Utls.shutDownExecutor(songLyricExecutor);
+        return singleFuture;
+    }
+
+    private void writeToDatabase(List<Future<String>> futures){
+        for(Future<String> future: futures){
+            try {
+                String lyricsInfo = future.get();
+                if (lyricsInfo==null) return;
+                String[] songAndLyrics = lyricsInfo.split(WebScraper.SONG_LYRIC_DELIMITER);
+                String songName = songAndLyrics[0].replace("?", "").replace("*","").replace("-", " ").trim();
+                String lyrics = songAndLyrics[1].replace('-', ' ');
+                if(singleSong!=null)
+                    this.singleSongLyrics = lyrics;
+                lyricsService.createLyricsRecord(artist, songName, lyrics);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private List<Future<String>> getLyrics(){
         List<Future<String>> futures = new ArrayList<>();
         try{
             String url = geniusBaseUrl+"/artists/"+artist;
+            System.out.println(url);
             Document doc = Jsoup.connect(url).get();
             Element element = doc.select(".full_width_button").first();
             String hrefToSongs = element.attr("href"); //fetches URI for list of all songs
@@ -134,6 +186,7 @@ public class WebScraper {
                 if(lyrics!=null) {
                     size += future.get().getBytes().length;
                     Utls.writeToFile(BASE_LYRICS_DIR, artist, lyrics);
+
                 }
                 } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -215,6 +268,9 @@ public class WebScraper {
 
     private  Runnable getPaginationRunnable(final String url, int pagination, String artist, HashMap songLinks) {
         return () -> getSinglePagination(url, pagination, artist, songLinks);
+    }
+    public String getSingleSongLyrics() {
+        return singleSongLyrics;
     }
 
 

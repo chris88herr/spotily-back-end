@@ -17,13 +17,16 @@ public class Utls {
         String songName = songAndLyrics[0].replace(" ", "_").replace("?", "");
         String lyrics = songAndLyrics[1];
         String songNamefixed = songName.replaceAll("\\/","");
-        String filePath = currDir + "\\" +baseDir+ "\\" + artist + "\\" + songNamefixed.replaceAll(" ", "_")+".txt";
-
+        String dirPat = currDir + "\\" +baseDir+ "\\" + artist;
+        File directory = new File(dirPat);
+        if(!directory.exists()){
+            directory.mkdirs();
+        }
+        String filePath = directory + "\\"+songNamefixed.replaceAll(" ", "_")+".txt";
         FileWriter fileWriter=null;
         File file = null;
         try{
             file = new File(filePath);
-            file.getParentFile().mkdirs();
             if(!file.exists()){
                 file.createNewFile();
             }

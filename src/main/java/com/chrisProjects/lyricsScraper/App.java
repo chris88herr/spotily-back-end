@@ -6,58 +6,27 @@ import com.chrisProjects.lyricsScraper.dao.GenreDaoIml;
 import com.chrisProjects.lyricsScraper.models.Genre;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.jboss.logging.Logger;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 
 /**
  * Hello world!
  *
  */
 
+@SpringBootApplication
+public class App {
 
-public class App 
-{
-
-
-    public static void main( String[] args )
-    {
-        GenreDaoIml genreDao = new GenreDaoIml();
-        List<Genre> genres = genreDao.getAllGenres();
-        if(genres!=null) {
-            System.out.println(genres.size());
-            for (Genre g : genres) {
-                System.out.println(g);
-            }
-        }
-        System.out.println("--------------------Get one Gnre----------------------");
-        Genre genre = genreDao.getGenreByName("Reggaeton");
-        if (genre!= null) {
-            System.out.println(genre);
-        }
-        System.out.println("--------------------Get genre by ID----------------------");
-        Genre genrebyId = genreDao.getGenreById(8);
-        if (genre!= null) {
-            System.out.println(genrebyId);
-        }
-
-        System.out.println("--------------------Update genre----------------------");
-        genreDao.updateGenre(new Genre(8,"Reggaeton"));
-        genreDao.updateGenre(new Genre(8,"Reggaeton update"));
-//        System.out.println("--------------------Delete genre----------------------");
-//        try {
-//            Thread.sleep(1000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//
-        genreDao.updateGenre(new Genre(8,"Reggaeton second"));
-
+    public static void main(String[] args) {
+        SpringApplication.run(App.class);
+//        new WebScrapperDemo().runDemo();
     }
-
-
-
-
-
 }
