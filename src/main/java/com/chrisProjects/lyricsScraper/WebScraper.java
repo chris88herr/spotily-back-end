@@ -67,6 +67,7 @@ public class WebScraper {
             lyricsFutures = getLyrics();
         }
 //        writeLyricsToFiles(lyricsFutures);
+        System.out.println("saving to db... ");
         writeToDatabase(lyricsFutures);
         debbuger("", "DONE with: "+artist+"\n");
     }

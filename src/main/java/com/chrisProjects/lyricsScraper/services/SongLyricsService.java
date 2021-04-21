@@ -42,6 +42,7 @@ public class SongLyricsService {
             for (Song song : songs) {
 //                System.out.println(song + "\t" + song.getArtist().getArtistName() + "\t" + artistNameFixed);
                 if (song.getArtist().getArtistName().toUpperCase().equals(artistNameFixed.toUpperCase())) {
+                    System.out.println("found on database");
                     songResult = song;
                 }
             }
@@ -59,15 +60,16 @@ public class SongLyricsService {
         return lyrics;
     }
 
-    public void createLyricsRecord(String artistName, String songName, String fileName){
+    public void createLyricsRecord(String artistName, String songName, String lyrics){
         Artist artist = artistDao.getArtistByName(artistName.replace("-", " "));
+        System.out.println(artist);
         if(artist==null){
             artist = new Artist(artistName.replace("-", " "));
             artistDao.createArtist(artist);
         }
         Song song = new Song(songName);
         song.setArtist(artist);
-        song.setSongLyrics(fileName);
+        song.setSongLyrics(lyrics);
         songDao.createSong(song);
     }
 
