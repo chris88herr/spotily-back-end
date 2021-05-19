@@ -3,6 +3,7 @@ package com.chrisProjects.lyricsScraper;
 import com.chrisProjects.lyricsScraper.Utils.Utls;
 import com.chrisProjects.lyricsScraper.models.Song;
 import com.chrisProjects.lyricsScraper.services.SongLyricsService;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -36,14 +37,14 @@ public class WebScraper {
     }
 
     public WebScraper(String artist){
-        this.artist = artist.replace(" ", "-");
+        this.artist = StringUtils.stripAccents(artist.replace(" ", "-"));
         executor = Executors.newFixedThreadPool(DEFAULT_THREAD_NUMBER);
         songLyricExecutor = Executors.newFixedThreadPool(DEFAULT_THREAD_NUMBER);
         lyricsService = new SongLyricsService();
     }
 
     public WebScraper(String artist, int numThreads, int numLyricThreads){
-        this.artist = artist.replace(" ", "-");;
+        this.artist = StringUtils.stripAccents(artist.replace(" ", "-"));
         executor = Executors.newFixedThreadPool(numThreads);
         songLyricExecutor = Executors.newFixedThreadPool(numLyricThreads);
         lyricsService = new SongLyricsService();
@@ -51,8 +52,8 @@ public class WebScraper {
     }
 
     public WebScraper(String artist, String song){
-        this.artist = artist.trim().replace(" ", "-");
-        this.singleSong = song.trim().replace(" ", "-");
+        this.artist = StringUtils.stripAccents(artist.trim().replace(" ", "-"));
+        this.singleSong = StringUtils.stripAccents(song.trim().replace(" ", "-"));
         executor = Executors.newFixedThreadPool(1);
         songLyricExecutor = Executors.newFixedThreadPool(1);
         lyricsService = new SongLyricsService();
