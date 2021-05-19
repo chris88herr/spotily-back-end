@@ -157,7 +157,7 @@ public class WebScraper {
     public String getLyricsForSong(String url, String songName) {
         {
             String parsedStr="";
-            System.out.println("getting lyrics from url");
+            System.out.println("getting lyrics from url "+ url);
             try{
                 Document doc = Jsoup.connect(url).timeout(5*1000).get();
                 Elements pElements = doc.select("div[class^=\"Lyrics__Container\"]");
