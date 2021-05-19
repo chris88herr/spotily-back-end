@@ -6,6 +6,7 @@ import com.chrisProjects.lyricsScraper.dao.ArtistDaoImpl;
 import com.chrisProjects.lyricsScraper.dao.SongDaoImpl;
 import com.chrisProjects.lyricsScraper.models.Artist;
 import com.chrisProjects.lyricsScraper.models.Song;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,8 +26,8 @@ public class SongLyricsService {
 
     public String getSongLyrics(String artistName, String songName){
         String lyrics = null;
-        String artistNameFixed = artistName.trim().replace("-", " ");
-        songName = songName.trim();
+        String artistNameFixed = StringUtils.stripAccents( artistName.trim().replace("-", " "));
+        songName = StringUtils.stripAccents(songName.trim());
         int indexOfParenthesis = songName.indexOf("(");
         if(indexOfParenthesis>0){
             songName = songName.substring(0, indexOfParenthesis).trim();

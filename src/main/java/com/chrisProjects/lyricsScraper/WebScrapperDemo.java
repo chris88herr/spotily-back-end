@@ -7,9 +7,9 @@ import java.util.concurrent.Executors;
 
 public class WebScrapperDemo {
 
-//    public static void main(String[] args){
+    public static void main(String[] args){
 //        runDemo();
-//    }
+    }
 
     public static void runDemo(){
         ExecutorService executor= Executors.newFixedThreadPool(4);
