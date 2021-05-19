@@ -61,6 +61,7 @@ public class SongLyricsService {
     }
 
     public void createLyricsRecord(String artistName, String songName, String lyrics){
+        System.out.println("saving to db... ");
         Artist artist = artistDao.getArtistByName(artistName.replace("-", " "));
         System.out.println(artist);
         if(artist==null){

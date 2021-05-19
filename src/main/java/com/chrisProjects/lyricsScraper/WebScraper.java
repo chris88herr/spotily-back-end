@@ -67,7 +67,6 @@ public class WebScraper {
             lyricsFutures = getLyrics();
         }
 //        writeLyricsToFiles(lyricsFutures);
-        System.out.println("saving to db... ");
         writeToDatabase(lyricsFutures);
         debbuger("", "DONE with: "+artist+"\n");
     }
@@ -155,14 +154,15 @@ public class WebScraper {
         return songLinks;
     }
 
-    public String getLyricsForSong(String url, String songName){
+    public String getLyricsForSong(String url, String songName) {
         {
             String parsedStr="";
+            System.out.println("getting lyrics from url");
             try{
                 Document doc = Jsoup.connect(url).timeout(5*1000).get();
-                Elements pElements = doc.select(".lyrics");
+                Elements pElements = doc.select("div[class^=\"Lyrics__Container\"]");
                 for (Element e: pElements) {
-                    parsedStr = e.text().replaceAll("\\[.*?]", "");
+                    parsedStr += e.text().replaceAll("\\[.*?]", "");
                 }
             }
             catch (IOException e){
@@ -170,10 +170,11 @@ public class WebScraper {
             }
             finally {
                 if(parsedStr.length()<1){
-//                    debbuger("GETLYRICS", "no lyircs for"+ songName);
+                    debbuger("GETLYRICS", "no lyircs for "+ songName);
                     return null;
                 }
                 String res  = songName+ SONG_LYRIC_DELIMITER +parsedStr;
+                System.out.println(res);
                 return res;
             }
         }

@@ -29,6 +29,10 @@ public class HibernateUtil {
                 props.put(Environment.URL, System.getenv("DB_URL"));
                 props.put(Environment.USER, System.getenv("DB_USER"));
                 props.put(Environment.PASS, System.getenv("DB_PASSWORD"));
+
+//                props.put(Environment.URL, System.getenv("dburl"));
+//                props.put(Environment.USER, System.getenv("dbuser"));
+//                props.put(Environment.PASS, System.getenv("dbpassword"));
                 props.put(Environment.SHOW_SQL, "false");
 
                 configuration.setProperties(props);

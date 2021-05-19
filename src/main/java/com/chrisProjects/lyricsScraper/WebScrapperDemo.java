@@ -7,6 +7,10 @@ import java.util.concurrent.Executors;
 
 public class WebScrapperDemo {
 
+//    public static void main(String[] args){
+//        runDemo();
+//    }
+
     public static void runDemo(){
         ExecutorService executor= Executors.newFixedThreadPool(4);
 //        String[] artists = {"red hot chili peppers", "the marias", "brahny", "yellow days", "drake", "bad bunny", "ozuna", "coldplay", "t-pain"};
@@ -15,7 +19,7 @@ public class WebScrapperDemo {
 //            WebScraper webScraper = new WebScraper(artist, 5, 10);
 //            executor.submit(()->webScraper.runScrapper());
 //        }
-        WebScraper singleSongWebScraper = new WebScraper("the hails", "younger");
+        WebScraper singleSongWebScraper = new WebScraper("the beatles", "yesterday");
         executor.submit(()->singleSongWebScraper.runScrapper());
         Utls.shutDownExecutor(executor);
     }
