@@ -166,6 +166,7 @@ public class WebScraper {
                 }
             }
             catch (IOException e){
+                debbuger("getLyrics",e.getCause().toString());
                 debbuger("getLyrics", "FAILED TO FETCH "+url+" Song: "+songName);
             }
             finally {
