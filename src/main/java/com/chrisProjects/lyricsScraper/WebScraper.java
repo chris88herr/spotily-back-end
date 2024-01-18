@@ -160,8 +160,11 @@ public class WebScraper {
             String parsedStr="";
             System.out.println("getting lyrics from url "+ url);
             try{
-                Document doc = Jsoup.connect(url).timeout(5*1000).get();
-                Elements pElements = doc.select("div[class^=\"Lyrics__Container\"]");
+                Document doc = Jsoup.connect(url)
+                		.userAgent("Chrome")
+                		.timeout(5*1000).get();
+                Elements pElements = doc.select("div[class^=\"Lyrics__Container-sc\"]");
+               
                 for (Element e: pElements) {
                     parsedStr += e.text().replaceAll("\\[.*?]", "");
                 }
